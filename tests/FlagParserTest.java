@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class FlagParserTest {
-    @Test void empty() {
+    @Test void empty() throws FlagParser.TokenException, FlagParser.MalformedInputException {
         FlagParser flagParser = new FlagParser("");
         assertFalse(flagParser.hasArgs());
         assertArrayEquals(new String[] {}, flagParser.getArgs());
@@ -31,12 +31,13 @@ class FlagParserTest {
                 arguments("\"\"", new String[] {""}),
                 arguments("'long arg 12' \"long arg 13\"", new String[] {"long arg 12", "long arg 13"}),
                 arguments("'long \\'arg\\' 14' \"long \\\"arg\\\" 15\"", new String[] {"long 'arg' 14", "long \"arg\" 15"}),
-                arguments("\"arg 16\\\\\"", new String[] {"arg 16\\"})
+                arguments("\"arg 16\\\\\"", new String[] {"arg 16\\"}),
+                arguments("arg\\ 17", new String[] {"arg 17"})
         );
     }
     @ParameterizedTest
     @MethodSource("argsStreamAndResultProvider")
-    void args(String input, String[] expected) {
+    void args(String input, String[] expected) throws FlagParser.TokenException, FlagParser.MalformedInputException {
         FlagParser flagParser = new FlagParser(input);
         assertTrue(flagParser.hasArgs());
         assertArrayEquals(expected, flagParser.getArgs());
@@ -63,7 +64,7 @@ class FlagParserTest {
     }
     @ParameterizedTest
     @MethodSource("opsStreamAndResultProvider")
-    void ops(String input, String[] ops, HashMap<String, String> pairs) {
+    void ops(String input, String[] ops, HashMap<String, String> pairs) throws FlagParser.TokenException, FlagParser.MalformedInputException {
         FlagParser flagParser = new FlagParser(input);
         assertFalse(flagParser.hasArgs());
         assertArrayEquals(new String[] {}, flagParser.getArgs());
@@ -90,7 +91,7 @@ class FlagParserTest {
         assertEquals(errorIndex, e.errorIndex);
     }
 
-    @Test void combined() {
+    @Test void combined() throws FlagParser.TokenException, FlagParser.MalformedInputException {
         FlagParser flagParser = new FlagParser("-a --op1='c d' -eFg arg1 \"arg 2\" --op2=ijk 'arg 3' --op3=\"m n o\" --op4 arg4 arg5");
         assertTrue(flagParser.hasArgs());
         assertArrayEquals(new String[] {"arg1", "arg 2", "arg 3", "arg4", "arg5"}, flagParser.getArgs());
@@ -110,7 +111,8 @@ class FlagParserTest {
                 arguments("arg\"1", 3, "\""),
                 arguments("--'op 1'", 2, "'"),
                 arguments("--\"op 1\"", 2, "\""),
-                arguments("\\", 0, "\\")
+                arguments("\\", 0, "\\"),
+                arguments("-a-b", 2, "-")
         );
     }
     @ParameterizedTest

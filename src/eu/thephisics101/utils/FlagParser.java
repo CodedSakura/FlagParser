@@ -28,7 +28,7 @@ public class FlagParser {
 
     /**
      * Constructor, which parses input on initialisation
-     * @param input - String input
+     * @param input String input
      * @throws TokenException when there is an unnecessary token in the input
      * @throws MalformedInputException when input cannot be parsed
      */
@@ -87,22 +87,21 @@ public class FlagParser {
         System.out.printf("%b: %s%n", hasPairs(), getPairs());
     }
 
-    private boolean startsWithQuote(String in) {
+    private boolean startsWithQuote(final String in) {
         for (char c : QUOTES) {
             if (in.startsWith(Character.toString(c))) return true;
         }
         return false;
     }
 
-    private boolean endsWithQuote(String in, char[] quotes) {
+    private boolean endsWithQuote(final String in, final char[] quotes) {
         for (char c : quotes) {
-            if (!in.endsWith(Character.toString(ESCAPE_CHAR) + c) &&
-                    in.endsWith(Character.toString(c))) return true;
+            if (!in.endsWith(Character.toString(ESCAPE_CHAR) + c) && in.endsWith(Character.toString(c))) return true;
         }
         return false;
     }
 
-    private boolean containsQuote(String in) {
+    private boolean containsQuote(final String in) {
         if (startsWithQuote(in)) return true;
         if (endsWithQuote(in, QUOTES)) return true;
         for (char c : QUOTES) {
@@ -116,8 +115,8 @@ public class FlagParser {
 
     /**
      * Strip surrounding quotes and check string validity
-     * @param in - input string
-     * @param position - position for validity reporting
+     * @param in input string
+     * @param position position for validity reporting
      * @return stripped string
      * @throws TokenException if there is a problem within the input
      */
@@ -133,6 +132,7 @@ public class FlagParser {
         return in;
     }
 
+    //region Getters
     /**
      * @return whether there are arguments
      */
@@ -165,6 +165,7 @@ public class FlagParser {
      * @return map of ordered option-value pairs
      */
     public HashMap<String, String> getPairs() { return pairs; }
+    //endregion
 
     /**
      * Exception when a token is misplaced

@@ -21,7 +21,7 @@ public class FlagParser {
     private static final char ESCAPE_CHAR = '\\';
 
     /** Parser state possibilities */
-    private enum State { NONE, ARG, OP }
+    private enum State { NONE, SOP, OP, LOP, LOP_VAL, ARG}
 
     /** Copy of input string */
     private String input;
@@ -37,54 +37,64 @@ public class FlagParser {
         StringBuilder tmp = null;
         String hold = "";
         State state = State.NONE;
-        int position = 0;
-        if (input.endsWith(Character.toString(ESCAPE_CHAR)))
-            throw new TokenException(input.substring(input.length() - 1), input.length() - 1);
-        for (String i : input.split(" ")) {
-            if (i.startsWith("--")) {
-                String[] split = i.substring(2).split("=", 2);
-                if (startsWithQuote(split[0])) throw new TokenException(split[0].substring(0, 1), position + 2);
-                if (split.length > 1) {
-                    if (startsWithQuote(split[1])) {
-                        if (endsWithQuote(split[1], split[1].substring(0, 1).toCharArray())) {
-                            pairs.put(split[0], stripNCheck(split[1], split[0].length() + position));
-                        } else {
-                            tmp = new StringBuilder(split[1]);
-                            state = State.OP;
-                            hold = split[0];
+        boolean escape = false;
+        int length = input.length();
+        for (int i = 0; i < length; i++) {
+            char cc = input.charAt(i);
+            switch (state) {
+                case NONE: {
+                    if (cc == '-') {
+                        state = State.SOP;
+                    } else {
+                        if (cc == ESCAPE_CHAR) {
+                            escape = !escape;
                         }
-                    } else pairs.put(split[0], split[1]);
+                        state = State.ARG;
+                    }
+                    break;
                 }
-                ops.add(split[0]);
-            } else if (state == State.OP) {
-                tmp.append(" ").append(i);
-                if (endsWithQuote(i, tmp.substring(0, 1).toCharArray())) {
-                    state = State.NONE;
-                    pairs.put(hold, stripNCheck(tmp.toString(), position - tmp.length() + i.length()));
+                case SOP:
+                    if (cc == '-') {
+                        state = State.LOP;
+                        break;
+                    } else {
+                        state = State.OP;
+                    }
+                case OP: {
+                    if (cc == '-') {
+                        if (tmp == null || tmp.length() == 0) {
+                            state = State.LOP;
+                        } else {
+                            throw new TokenException(Character.toString(cc), i);
+                        }
+                    } else {
+                        if (isValidOpChar(cc)) {
+                            ops.add(Character.toString(cc));
+                        } else {
+                            throw new TokenException(Character.toString(cc), i);
+                        }
+                    }
+                    break;
                 }
-            } else if (i.startsWith("-")) {
-                if (containsQuote(i)) throw new TokenException("'", position);
-                ops.addAll(Arrays.asList(i.substring(1).split("")));
-            } else if (startsWithQuote(i)) {
-                if (endsWithQuote(i, i.substring(0, 1).toCharArray())) {
-                    args.add(stripNCheck(i, position));
-                } else {
-                    tmp = new StringBuilder(i);
-                    state = State.ARG;
+                case LOP: {
+                    break;
                 }
-            } else if (state == State.ARG) {
-                tmp.append(" ").append(i);
-                if (endsWithQuote(i, tmp.substring(0, 1).toCharArray())) {
-                    state = State.NONE;
-                    args.add(stripNCheck(tmp.toString(), position - tmp.length() + i.length()));
+                case LOP_VAL: {
+                    break;
                 }
-            } else if (!i.equals("")) args.add(stripNCheck(i, position));
-            position += i.length() + 1;
+                case ARG: {
+                    break;
+                }
+            }
         }
 
         System.out.printf("%b: %s%n", hasArgs(), Arrays.toString(getArgs()));
         System.out.printf("%b: %s%n", hasOps(), Arrays.toString(getOps()));
         System.out.printf("%b: %s%n", hasPairs(), getPairs());
+    }
+
+    private boolean isValidOpChar(final char ch) {
+        return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9');
     }
 
     private boolean startsWithQuote(final String in) {

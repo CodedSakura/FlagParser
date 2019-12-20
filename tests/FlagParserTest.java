@@ -76,11 +76,12 @@ class FlagParserTest {
 
     static Stream<Arguments> malformedInputStreamAndResultProvider() {
         return Stream.of(
-                arguments("'arg 1'arg2", 6),
-                arguments("'arg 1''arg 2'", 6),
-                arguments("\"arg 1\"'arg 2'", 6),
+                arguments("'arg 1'arg2", 7),
+                arguments("'arg 1''arg 2'", 7),
+                arguments("\"arg 1\"'arg 2'", 7),
                 arguments("'''", 2),
-                arguments("\"", 0)
+                arguments("\"", 0),
+                arguments("\\", 0)
         );
     }
     @ParameterizedTest
@@ -111,7 +112,6 @@ class FlagParserTest {
                 arguments("arg\"1", 3, "\""),
                 arguments("--'op 1'", 2, "'"),
                 arguments("--\"op 1\"", 2, "\""),
-                arguments("\\", 0, "\\"),
                 arguments("-a-b", 2, "-")
         );
     }

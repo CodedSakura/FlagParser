@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="FlagParser">
+    <output-path>$PROJECT_DIR$/out/artifacts/FlagParser</output-path>
+    <root id="archive" name="FlagParser.jar">
+      <element id="module-output" name="FlagParser" />
+    </root>
+  </artifact>
+</component>

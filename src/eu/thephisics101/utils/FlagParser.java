@@ -42,7 +42,7 @@ public class FlagParser {
         int length = input.length();
         for (int i = 0; i < length; i++) {
             char cc = input.charAt(i);
-            System.out.printf("%7s '%s'; hold=%2d tmp=%s\n", state, cc, (int)hold, tmp);
+//            System.out.printf("%7s '%s'; hold=%2d tmp=%s\n", state, cc, (int) hold, tmp);
             switch (state) {
                 case NONE:
                     if (cc == '-') {
@@ -223,10 +223,9 @@ public class FlagParser {
                 }
                 break;
         }
-
-        System.out.printf("%b: %s%n", hasArgs(), Arrays.toString(getArgs()));
-        System.out.printf("%b: %s%n", hasOps(), Arrays.toString(getOps()));
-        System.out.printf("%b: %s%n", hasPairs(), getPairs());
+//        System.out.printf("%b: %s%n", hasArgs(), Arrays.toString(getArgs()));
+//        System.out.printf("%b: %s%n", hasOps(), Arrays.toString(getOps()));
+//        System.out.printf("%b: %s%n", hasPairs(), getPairs());
     }
 
     private boolean isValidOpChar(final char ch) {

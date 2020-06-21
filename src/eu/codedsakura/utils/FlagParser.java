@@ -9,11 +9,11 @@ import java.util.*;
  */
 public class FlagParser {
     /** Parsed arguments */
-    private ArrayList<String> args = new ArrayList<>();
+    private final ArrayList<String> args = new ArrayList<>();
     /** Parsed options */
-    private LinkedHashSet<String> ops = new LinkedHashSet<>();
+    private final LinkedHashSet<String> ops = new LinkedHashSet<>();
     /** Parsed option-value pairs */
-    private HashMap<String, String> pairs = new HashMap<>();
+    private final HashMap<String, String> pairs = new HashMap<>();
 
     /** Quote literals */
     private static final char[] QUOTES = {'\'', '"'};
@@ -24,7 +24,7 @@ public class FlagParser {
     private enum State { NONE, SOP, OP, LOP, LOP_VAL, ARG }
 
     /** Copy of input string */
-    private String input;
+    private final String input;
 
     /**
      * Constructor, which parses input on initialisation
@@ -42,7 +42,6 @@ public class FlagParser {
         int length = input.length();
         for (int i = 0; i < length; i++) {
             char cc = input.charAt(i);
-//            System.out.printf("%7s '%s'; hold=%2d tmp=%s\n", state, cc, (int) hold, tmp);
             switch (state) {
                 case NONE:
                     if (cc == '-') {
@@ -223,9 +222,6 @@ public class FlagParser {
                 }
                 break;
         }
-//        System.out.printf("%b: %s%n", hasArgs(), Arrays.toString(getArgs()));
-//        System.out.printf("%b: %s%n", hasOps(), Arrays.toString(getOps()));
-//        System.out.printf("%b: %s%n", hasPairs(), getPairs());
     }
 
     private boolean isValidOpChar(final char ch) {

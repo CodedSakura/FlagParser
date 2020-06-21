@@ -1,4 +1,4 @@
-import eu.thephisics101.utils.FlagParser;
+import eu.codedsakura.utils.FlagParser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

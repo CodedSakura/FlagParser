@@ -1,10 +1,10 @@
-package eu.thephisics101.utils;
+package eu.codedsakura.utils;
 
 import java.util.*;
 
 /**
  * Java based flag and argument parser
- * @author thephisics101
+ * @author codedsakura
  * @version 0.0.1
  */
 public class FlagParser {

@@ -54,6 +54,7 @@ public class FlagParser {
                             break;
                         }
                     }
+                    // fallthrough
                 case ARG:
                     if (Character.isWhitespace(cc)) {
                         if (tmp == null) {
@@ -97,6 +98,7 @@ public class FlagParser {
                         tmp.append(cc);
                     }
                     break;
+
                 case SOP:
                     if (cc == '-') {
                         state = State.LOP;
@@ -104,6 +106,7 @@ public class FlagParser {
                     } else {
                         state = State.OP;
                     }
+                    // fallthrough
                 case OP:
                     if (Character.isWhitespace(cc)) {
                         if (tmp != null) {
@@ -120,6 +123,7 @@ public class FlagParser {
                         throw new TokenException(Character.toString(cc), i);
                     }
                     break;
+
                 case LOP:
                     if (cc == '-') {
                         if (tmp == null) {
@@ -152,6 +156,7 @@ public class FlagParser {
                         throw new TokenException(Character.toString(cc), i);
                     }
                     break;
+
                 case LOP_VAL:
                     if (Character.isWhitespace(cc)) {
                         if (tmp == null) {
@@ -204,9 +209,11 @@ public class FlagParser {
                     args.add(tmp.toString());
                 }
                 break;
+
             case SOP:
                 args.add("-");
                 break;
+
             case LOP:
                 if (tmp == null) {
                     throw new MalformedInputException(length-1);
@@ -214,6 +221,7 @@ public class FlagParser {
                     ops.add(tmp.toString());
                 }
                 break;
+
             case LOP_VAL:
                 if (isQuote(hold) || tmp == null) {
                     throw new MalformedInputException(length-1);
